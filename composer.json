@@ -1,0 +1,14 @@
+{
+    "name": "off-by-n/shortcode-templates",
+    "description": " A simple and fast parser for text with BBCode-style shortcodes ",
+    "type": "library",
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "OffByN\\ShortcodeTemplates\\": "src/"
+        }
+    }
+}
