@@ -6,6 +6,13 @@ The scope of this project is to turn plain text containing generic shortcodes in
 It is not within the scope of this project to support any processing beyond that. 
 For a more flexible solution that is optimized for smaller amounts of text, see [Shortcode](https://github.com/thunderer/Shortcode).
 
+
+## Installation
+
+```
+composer require off-by-n/shortcode-templates
+```
+
 ## Usage
 
 ```php
