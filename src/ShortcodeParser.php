@@ -61,13 +61,25 @@ class ShortcodeParser extends AbstractShortcodeParser
     protected function parseValue($match)
     {
         if (isset($match['valueEncoded']) && $match['valueEncoded'][1] >= 0) {
-            $valueEncoded = $match['valueEncoded'][0];
-            preg_replace('/\n/', '\n', $valueEncoded);
-            return json_decode($valueEncoded);
+            return $this->parseEncodedValue($match['valueEncoded'][0]);
         } elseif (isset($match['valueSimple']) && $match['valueSimple'][1]) {
             return $match['valueSimple'][0];
         } else {
             return null;
         }
+    }
+
+    protected function parseEncodedValue($value)
+    {
+        // ensure characters are properly encoded
+        $value = preg_replace_callback(
+            '/[^ -~]+/',
+            function ($match) {
+                return substr(json_encode($match[0]), 1, -1);
+            },
+            $value
+        );
+
+        return json_decode($value);
     }
 }
