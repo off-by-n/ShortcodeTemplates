@@ -4,12 +4,12 @@ namespace OffByN\ShortcodeTemplates;
 
 class ShortcodeParser extends AbstractShortcodeParser
 {
-    protected static string $shortcodeRegexTemplate = '\\[{space}(?<close>\\/)?{space}(?<name>{key})(?:{space}={value})?(?<attributes>(?:\\s+(?:{key}(?:{space}={space}(?:{encodedValue}|{simpleValue}))?))+)?{space}\\]';
+    protected static string $shortcodeRegexTemplate = '\\[{space}(?<close>\\/)?{space}(?<name>{key})(?:{space}={space}{value})?(?<attributes>(?:\\s+(?:{key}(?:{space}={space}(?:{encodedValue}|{simpleValue}))?))+)?{space}\\]';
     protected static string $attributeRegexTemplate = '(?<=\\s)(?<name>{key})(?:{space}={space}{value})?';
     protected static string $valueRegexTemplate = '(?:(?<valueEncoded>{encodedValue})|(?<valueSimple>{simpleValue}))';
     protected static $regexParts = [
         '{key}' => '[^\\s=\\]]+',
-        '{encodedValue}' => '".*?(?<!\\\\)(?:\\\\\\\\)*"',
+        '{encodedValue}' => '"(?:.|\\n)*?(?<!\\\\)(?:\\\\\\\\)*"',
         '{simpleValue}' => '(?!")[^\\s\\]]+',
         '{space}' => '\\s*',
     ];
@@ -61,7 +61,9 @@ class ShortcodeParser extends AbstractShortcodeParser
     protected function parseValue($match)
     {
         if (isset($match['valueEncoded']) && $match['valueEncoded'][1] >= 0) {
-            return json_decode($match['valueEncoded'][0]);
+            $valueEncoded = $match['valueEncoded'][0];
+            preg_replace('/\n/', '\n', $valueEncoded);
+            return json_decode($valueEncoded);
         } elseif (isset($match['valueSimple']) && $match['valueSimple'][1]) {
             return $match['valueSimple'][0];
         } else {
